@@ -39,15 +39,14 @@
               </div>
               <div class="comment">                
                 <div class="comment-body">
-                  <form>
+                  <form @submit.prevent="savePost">
                     <div class="md-layout">
                       <!-- Guest name -->
                       <div class="md-layout-item">
-                        <md-field>
+                        <md-field md-clearable>
                           <label>Your Name</label>
                           <md-input
-                            v-model="author"
-                            md-clearable
+                            v-model="postDetails.author"
                           >
                           </md-input>
                         </md-field>
@@ -55,11 +54,11 @@
 
                       <!-- Guest email -->
                       <div class="md-layout-item">
-                        <md-field>
+                        <md-field md-clearable>
                           <label>Your Email</label>
                           <md-input
-                            v-model="email"
-                            md-clearable
+                            v-model="postDetails.email"
+                            type="email"
                           >
                           </md-input>
                         </md-field>
@@ -67,10 +66,10 @@
                     </div>
 
                     <!-- Guest comment/post -->
-                    <md-field>
+                    <md-field md-clearablea>
                       <label>What's on your mind?</label>
                       <md-textarea
-                        v-model="comment"
+                        v-model="postDetails.post"
                         md-counter="200"
                         md-autogrow
                         class="md-textarea"
@@ -83,7 +82,6 @@
                       <md-button
                         type="submit"
                         class="md-accent md-md ml-auto"
-                        @click="postComment"
                       >
                         Post comment
                       </md-button>
@@ -91,6 +89,19 @@
                   </form>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="container">
+          <div class="md-layout-row">
+            <h3>{{ this.postcount }} Posts</h3>
+            <div v-for="(item, key) in posts"
+              :key="key"
+            >
+              {{ item.author_name }}
             </div>
           </div>
         </div>
@@ -209,13 +220,15 @@
 </template>
 
 <script>
-import { LoginCard } from "@/components"
+import { LoginCard } from '@/components'
+import axios from 'axios';
+import { mapActions, mapState } from 'vuex'
 
 export default {
   components: {
     LoginCard
   },
-  name: "index",
+  name: "Index",
   bodyClass: "index-page",
   props: {
     image: {
@@ -253,16 +266,30 @@ export default {
   },
   data() {
     return {
-      author: null,
-      comment: null,
       firstname: null,
-      email: null,
       password: null,
       leafShow: false,
-      user: null
+      user: null,
+      email: null,
+      postDetails: {
+        author: null,
+        email: null,
+        post: null,
+      },
+      postcount: 0,
+      posts: []
     };
   },
+
+  created() {
+    this.getPost()
+  },
+
   methods: {
+    ...mapActions('posts', {
+      createPost: 'create'
+    }),
+
     leafActive() {
       if (window.innerWidth < 768) {
         this.leafShow = false
@@ -271,18 +298,29 @@ export default {
       }
     },
 
-    postComment() {
-      const params = { author_name: this.author }
-      console.log(params, 'params')
-      // async () => {
-      //   await this.addPost({
-      //     params: {
-      //       author_name: this.author,
-      //       author_email: this.email
-      //     }
-      //   })
-      //   console.log(params, 'params')
-      // }
+    async savePost() {
+      try {
+        await axios.post('http://localhost:5000/posts', {
+          author_name: this.postDetails.author,
+          author_email: this.postDetails.email,
+          author_post: this.postDetails.post
+        })
+        this.postDetails.author = ''
+        this.postDetails.email = ''
+        this.postDetails.post = ''
+      } catch (err) {
+        console.log(err)
+      }
+    },
+
+    async getPost() {
+      try {
+        const response = await axios.get('http://localhost:5000/posts')
+        this.posts = response.data
+        this.postcount = response.data.length
+      } catch (err) {
+        console.log(err)
+      }
     }
   },
   computed: {
