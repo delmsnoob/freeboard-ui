@@ -20,7 +20,7 @@ export default {
           created_at: e.created_at
         })
       })
-      return key
+      key
     },
 
     getPostCount: state => {
@@ -31,18 +31,17 @@ export default {
   mutations: {
     SET_STATE (state, payload) {
       state[payload.name] = payload.data
+    },
+
+    SET_COUNT (state, count) {
+      state.count = count
     }
   },
 
   actions: {
-    async create ({ commit, state }, data) {
-      console.log(data, 'data')
-      try {
-        return await axios.post('/post', data)
-      } catch (error) {
-        console.log(error)
-        throw error
-      }
+    async create ({ commit }, posts) {
+      await axios.post('/posts', posts)
+      console.log(posts, 'posts')
     }
   }
 }

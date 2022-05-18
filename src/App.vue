@@ -1,5 +1,5 @@
 <template>
-  <div id="material-kit">
+  <div id="app">
     <div :class="{ 'nav-open': NavbarStore.showNavbar }">
       <router-view name="header" />
       <div>
@@ -9,3 +9,9 @@
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'App'
+}
+</script>
