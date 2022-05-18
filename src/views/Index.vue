@@ -27,11 +27,11 @@
               <div class="md-layout-row">
                 <div class="md-layout-item">
                   <md-avatar class="md-large">
-                <img
-                  src="@/assets/img/faces/user.png"
-                  alt="avatar"
-                >
-              </md-avatar>
+                    <img
+                      src="@/assets/img/faces/user.png"
+                      alt="avatar"
+                    >
+                  </md-avatar>
                 </div>
               <div class="md-layout-item">
                 <h4 v-if="user === null">Guest</h4>
@@ -101,7 +101,39 @@
             <div v-for="(item, key) in posts"
               :key="key"
             >
-              {{ item.author_name }}
+              <div class="comment">
+                <div class="md-layout-item">
+                  <md-avatar class="md-large">
+                    <img
+                      src="@/assets/img/faces/user.png"
+                      alt="avatar"
+                    >
+                  </md-avatar>
+                </div>
+
+                <div class="md-layout-item">
+                  <div class="comment-body">
+                    <h4 class="comment-heading">
+                      {{ item.author_name }}
+                      <small>
+                        {{ item.created_at }}
+                      </small>
+                    </h4>
+
+                    <p>{{ item.author_post }}</p>
+
+                    <div class="comment-footer">
+                      <md-button class="md-just-icon md-raised md-info md-round">
+                        <md-icon>thumb_up</md-icon>
+                      </md-button>
+
+                      <md-button class="md-just-icon md-raised md-success md-round">
+                        <md-icon>reply</md-icon>
+                      </md-button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -347,7 +379,8 @@ export default {
 <style lang="scss" scoped>
   .comment {
     display: flex;
-    align-items: flex-start;
+    justify-content: start;
+    // align-items: flex-start;
   }
 
   .comment-body {
@@ -360,8 +393,17 @@ export default {
 
   .comment-footer{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     margin-top: 30px;
+    gap: 1rem;
+  }
+
+  .comment-heading {
+    flex-direction: row;
+  }
+
+  small {
+    display: block;
   }
 
 @media all and (min-width: 991px) {
