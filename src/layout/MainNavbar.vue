@@ -8,7 +8,7 @@
   >
     <div class="md-toolbar-row md-collapse-lateral">
       <div class="md-toolbar-section-start">
-        <h3 class="md-title">Freeboard</h3>
+        <h3 class="md-title" style="font-weight: 900">Freeboard</h3>
       </div>
       <div class="md-toolbar-section-end">
         <md-button
@@ -64,12 +64,11 @@
               </li>
 
               <md-list-item
-                href="https://demos.creative-tim.com/vue-material-kit/documentation/"
-                target="_blank"
+                href="/"
                 v-if="showDownload"
               >
-                <i class="material-icons">content_paste</i>
-                <p>Documentation</p>
+                <i class="material-icons">person_add</i>
+                <p>Sign Up</p>
               </md-list-item>
 
               <md-list-item
@@ -77,8 +76,8 @@
                 @click="scrollToElement()"
                 v-if="showDownload"
               >
-                <i class="material-icons">cloud_download</i>
-                <p>Download</p>
+                <i class="material-icons">logout</i>
+                <p>Logout</p>
               </md-list-item>
 
               <li class="md-list-item" v-else>
@@ -120,37 +119,6 @@
                   </div>
                 </a>
               </li>
-
-              <md-list-item
-                href="https://twitter.com/CreativeTim"
-                target="_blank"
-              >
-                <i class="fab fa-twitter"></i>
-                <p class="hidden-lg">Twitter</p>
-                <md-tooltip md-direction="bottom"
-                  >Follow us on Twitter</md-tooltip
-                >
-              </md-list-item>
-              <md-list-item
-                href="https://www.facebook.com/CreativeTim"
-                target="_blank"
-              >
-                <i class="fab fa-facebook-square"></i>
-                <p class="hidden-lg">Facebook</p>
-                <md-tooltip md-direction="bottom"
-                  >Like us on Facebook</md-tooltip
-                >
-              </md-list-item>
-              <md-list-item
-                href="https://www.instagram.com/CreativeTimOfficial"
-                target="_blank"
-              >
-                <i class="fab fa-instagram"></i>
-                <p class="hidden-lg">Instagram</p>
-                <md-tooltip md-direction="bottom"
-                  >Follow us on Instagram</md-tooltip
-                >
-              </md-list-item>
             </md-list>
           </div>
         </div>
