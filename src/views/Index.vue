@@ -33,104 +33,131 @@
                     >
                   </md-avatar>
                 </div>
-              <div class="md-layout-item">
-                <h4 v-if="user === null">Guest</h4>
-              </div>
-              </div>
-              <div class="comment">                
-                <div class="comment-body">
-                  <form @submit.prevent="savePost">
-                    <div class="md-layout">
-                      <!-- Guest name -->
-                      <div class="md-layout-item">
-                        <md-field md-clearable>
-                          <label>Your Name</label>
-                          <md-input
-                            v-model="postDetails.author"
-                          >
-                          </md-input>
-                        </md-field>
-                      </div>  
-
-                      <!-- Guest email -->
-                      <div class="md-layout-item">
-                        <md-field md-clearable>
-                          <label>Your Email</label>
-                          <md-input
-                            v-model="postDetails.email"
-                            type="email"
-                          >
-                          </md-input>
-                        </md-field>
-                      </div>
-                    </div>
-
-                    <!-- Guest comment/post -->
-                    <md-field md-clearablea>
-                      <label>What's on your mind?</label>
-                      <md-textarea
-                        v-model="postDetails.post"
-                        md-counter="200"
-                        md-autogrow
-                        class="md-textarea"
-                      >
-                      </md-textarea>
-                    </md-field>
-
-                    <!-- Post comment -->
-                    <div class="comment-footer">
-                      <md-button
-                        type="submit"
-                        class="md-accent md-md ml-auto"
-                      >
-                        Post comment
-                      </md-button>
-                    </div>
-                  </form>
+                <div class="md-layout-item">
+                  <h4 v-if="user === null">Guest</h4>
                 </div>
+              </div>
+              <div class="post-comment">                
+                <form @submit.prevent="savePost">
+                  <div class="md-layout">
+                    <!-- Guest name -->
+                    <div class="md-layout-item">
+                      <md-field md-clearable>
+                        <label>Your Name</label>
+                        <md-input
+                          v-model="postDetails.author"
+                        >
+                        </md-input>
+                      </md-field>
+                    </div>  
+
+                    <!-- Guest email -->
+                    <div class="md-layout-item">
+                      <md-field md-clearable>
+                        <label>Your Email</label>
+                        <md-input
+                          v-model="postDetails.email"
+                          type="email"
+                        >
+                        </md-input>
+                      </md-field>
+                    </div>
+                  </div>
+
+                  <!-- Guest comment/post -->
+                  <md-field>
+                    <label>What's on your mind?</label>
+                    <md-textarea
+                      v-model="postDetails.post"
+                      :maxlength=postMaxlength
+                      md-autogrow
+                      class="md-textarea"
+                    >
+                    </md-textarea>
+                  </md-field>
+
+                  <!-- Post comment -->
+                  <div class="comment-footer">
+                    <md-button
+                      type="submit"
+                      class="md-accent md-md ml-auto"
+                    >
+                      Post
+                    </md-button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <div class="posts-section">
+        <div class="section">
+          <div class="container">
+            <div class="md-layout-row">
+              <h3>{{ this.postcount }} Posts</h3>
+              <div v-for="(item, key) in posts"
+                :key="key"
+              >
+                <div class="comment post-container">
+                    <md-avatar class="md-large">
+                      <img
+                        src="@/assets/img/faces/user.png"
+                        alt="avatar"
+                      >
+                    </md-avatar>
 
-      <div class="section">
-        <div class="container">
-          <div class="md-layout-row">
-            <h3>{{ this.postcount }} Posts</h3>
-            <div v-for="(item, key) in posts"
-              :key="key"
-            >
-              <div class="comment">
-                <div class="md-layout-item">
-                  <md-avatar class="md-large">
-                    <img
-                      src="@/assets/img/faces/user.png"
-                      alt="avatar"
-                    >
-                  </md-avatar>
-                </div>
-
-                <div class="md-layout-item">
-                  <div class="comment-body">
-                    <h4 class="comment-heading">
-                      {{ item.author_name }}
-                      <small>
-                        {{ item.created_at }}
-                      </small>
-                    </h4>
+                  <div class="md-layout-item">
+                    <div class="comment-body">
+                      <h4 class="comment-heading">
+                        {{ item.author_name }}
+                        <small>
+                          <timeago :datetime="item.created_at" :auto-update="60"></timeago>
+                        </small>
+                      </h4>
+                    </div>
 
                     <p>{{ item.author_post }}</p>
 
-                    <div class="comment-footer">
-                      <md-button class="md-just-icon md-raised md-info md-round">
+                    <!-- <div
+                      v-show="showReplyField"
+                      class="reply-section"
+                      :id="item.id"
+                    >
+                      <md-avatar class="md-large">
+                        <img
+                          src="@/assets/img/faces/user.png"
+                          alt="avatar"
+                        >
+                      </md-avatar>
+                      <md-field md-clearable>
+                        <label>Write a nice reply</label>
+                        <md-textarea
+                          v-model="reply"
+                          :maxlength=replyMaxlength
+                          md-autogrow
+                          class="md-textarea"
+                        >
+                        </md-textarea>
+                      </md-field>
+                    </div> -->
+
+                    <ReplySection :selectedPost="item.id" :post="posts" @click="selectedPost = post.id" :showReply="showReply" :replyMaxlength="replyMaxlength" :reply="reply"/>
+
+                    <!-- <div class="comment-footer">
+                      <md-button class="md-simple md-raised md-info no-pad">
                         <md-icon>thumb_up</md-icon>
+                        <small class="icon-text">like</small>
                       </md-button>
 
-                      <md-button class="md-just-icon md-raised md-success md-round">
+                      <md-button
+                        class="md-simple md-raised md-success" 
+                        @click="toggleReplyField(item.id)"
+                      >
                         <md-icon>reply</md-icon>
+                        <small class="icon-text">reply</small>
                       </md-button>
-                    </div>
+                    </div> -->
                   </div>
                 </div>
               </div>
@@ -253,13 +280,15 @@
 
 <script>
 import { LoginCard } from '@/components'
+import ReplySection from './components/ReplySection.vue'
 import axios from 'axios';
 import { mapActions, mapState } from 'vuex'
 
 export default {
   components: {
-    LoginCard
-  },
+    LoginCard,
+    ReplySection
+},
   name: "Index",
   bodyClass: "index-page",
   props: {
@@ -309,7 +338,12 @@ export default {
         post: null,
       },
       postcount: 0,
-      posts: []
+      posts: [],
+      postMaxlength: 200,
+      reply: null,
+      replyMaxlength: 100,
+
+      showReply: false
     };
   },
 
@@ -330,13 +364,20 @@ export default {
       }
     },
 
+    toggleReplyField(id) {
+      this.showReplyField = !this.showReplyField
+    },
+
     async savePost() {
       try {
-        await axios.post('http://localhost:5000/posts', {
-          author_name: this.postDetails.author,
-          author_email: this.postDetails.email,
-          author_post: this.postDetails.post
-        })
+        if (this.postDetails !== null) {
+          await axios.post('http://localhost:5000/posts', {
+            author_name: this.postDetails.author,
+            author_email: this.postDetails.email,
+            author_post: this.postDetails.post
+          })
+        } 
+        this.getPost()        
         this.postDetails.author = ''
         this.postDetails.email = ''
         this.postDetails.post = ''
@@ -377,15 +418,19 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+  .posts-section {
+    max-width: 800px;
+    margin: auto;
+  }
   .comment {
     display: flex;
     justify-content: start;
     // align-items: flex-start;
   }
 
-  .comment-body {
-    flex: 1;
-  }
+  .post-container {
+      margin-bottom: 4rem;
+    }
 
   .md-textarea {
     min-height: 100px !important;
@@ -395,15 +440,21 @@ export default {
     display: flex;
     flex-direction: row;
     margin-top: 30px;
-    gap: 1rem;
+    justify-content: flex-end;
   }
 
   .comment-heading {
+    // display: flex;
+    font-weight: 500;
     flex-direction: row;
   }
 
   small {
     display: block;
+  }
+
+  .md-large {
+    margin: 0;
   }
 
 @media all and (min-width: 991px) {
