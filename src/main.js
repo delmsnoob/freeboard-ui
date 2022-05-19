@@ -9,6 +9,8 @@ import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
 
+import VueTimeago from 'vue-timeago'
+
 import Index from "./views/Index.vue";
 import Landing from "./views/Landing.vue";
 import Login from "./views/Login.vue";
@@ -22,6 +24,14 @@ Vue.use(VueRouter)
 
 Vue.use(MaterialKit)
 Vue.use(VueMaterial)
+
+Vue.use(VueTimeago, {
+  name: 'Timeago',
+  locale: 'en',
+  locales: {
+    'zh-CN': require('date-fns/locale/zh_cn')
+  }
+})
 
 const routes = [
   {
