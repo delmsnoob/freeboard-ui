@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <form>
     <div
       v-show="showReply"
       class="reply-section"
@@ -19,14 +19,26 @@
           :maxlength="replyMaxlength"
           class="md-textarea"
         >
+        
         </md-textarea>
+        <md-button
+          @click="sendReply"
+          :md-ripple="false"
+          class="md-simple md-dense md-raised md-info btn-fab send-btn"
+        >
+          <md-icon class="mr">send</md-icon>
+        </md-button>
       </md-field>
     </div>
 
-    <div class="comment-footer md-layout">
-      <small>{{ likes }}</small>
+    <div class="comment-footer">
 
-      <div v-if="!showReply">
+      <div
+        v-if="!showReply"
+        class="md-layout"
+      >
+        <small class="like-btn">{{ likes }}</small>
+
         <md-button
           @click="likePost"
           class="md-simple md-raised md-info"
@@ -53,27 +65,36 @@
         </md-button>
       </div>
     </div>
-  </div>
+  </form>
 </template>
 
 <script>
+import axios from 'axios'
+import { mapActions, mapState } from 'vuex'
+
+
 export default {
   name: 'ReplySection',
 
   data() {
     return {
       showReply: false,
-      reply: null,
+      reply: '',
       likes: 12
     }
   },
 
   props: {
     selectedPost: Number,
-    replyMaxlength: Number
+    replyMaxlength: Number,
+    userId: Number
   },
 
   methods: {
+    ...mapActions('comments', {
+      createReply: 'createReply'
+    }),
+    
     toggleReplyField() {
       this.showReply = !this.showReply
     },
@@ -85,6 +106,24 @@ export default {
 
     likePost() {
       this.likes += 1
+    },
+
+    clear() {
+      this.reply = ''
+    },
+
+    async sendReply() {
+      try {
+        if (this.reply !== '') {
+          await axios.post('http://localhost:5000/comments', {
+            post_id: this.selectedPost,
+            comment: this.reply,
+          })
+        }
+        this.clear()
+      } catch (err) {
+        console.log(err)
+      }
     }
   },
 
@@ -123,6 +162,15 @@ export default {
     .cancel-btn {
       margin-top: 2rem;
     }
+
+    .like-btn {
+      margin: auto;
+    }
+  }
+  .send-btn {
+      position: absolute;
+      bottom: 0;
+      right: -1rem;
   }
 
   .btn-text__cancel {

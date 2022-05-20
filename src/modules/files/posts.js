@@ -8,7 +8,7 @@ export default {
     postCount: 0
   },
 
-  getter: {
+  /* getter: {
     getPostList: state => {
       const key = []
 
@@ -26,7 +26,7 @@ export default {
     getPostCount: state => {
       return state.postCount
     }
-  },
+  }, */
 
   mutations: {
     SET_STATE (state, payload) {
@@ -39,9 +39,17 @@ export default {
   },
 
   actions: {
-    async create ({ commit }, posts) {
-      await axios.post('/posts', posts)
-      console.log(posts, 'posts')
+    async create ({ commit, state }, data) {
+      try {
+        return await axios.post('/post', data)
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
+    },
+
+    async fetchPosts ({ commit }, posts) {
+      await axios.get('/posts', posts)
     }
   }
 }

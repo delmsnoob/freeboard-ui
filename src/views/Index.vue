@@ -165,7 +165,7 @@
           </div>
         </div>
       </div>
-      <div class="section section-signup page-header" :style="signupImage">
+      <!-- <div class="section section-signup page-header" :style="signupImage">
         <div class="container">
           <div class="md-layout">
             <div
@@ -273,20 +273,20 @@
             >
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script>
-import { LoginCard } from '@/components'
-import ReplySection from './components/ReplySection.vue'
+// import { LoginCard } from '@/components'
+import ReplySection from '@/views/components/ReplySection'
 import axios from 'axios';
 import { mapActions, mapState } from 'vuex'
 
 export default {
   components: {
-    LoginCard,
+    // LoginCard,
     ReplySection
 },
   name: "Index",
@@ -333,9 +333,9 @@ export default {
       user: null,
       email: null,
       postDetails: {
-        author: null,
-        email: null,
-        post: null,
+        author: '',
+        email: '',
+        post: '',
       },
       postcount: 0,
       posts: [],
@@ -351,9 +351,37 @@ export default {
     this.getPost()
   },
 
+  computed: {
+    ...mapState('posts', {
+      postList: 'posts',
+      postCount: 'postCount'
+    }),
+      
+    headerStyle() {
+      return {
+        backgroundImage: `url(${this.image})`
+      }
+    },
+    signupImage() {
+      return {
+        backgroundImage: `url(${this.signup})`
+      }
+    }
+  },
+  
+  mounted() {
+    this.leafActive()
+    window.addEventListener("resize", this.leafActive)
+  },
+
+  beforeDestroy() {
+    window.removeEventListener("resize", this.leafActive)
+  },
+
   methods: {
     ...mapActions('posts', {
-      createPost: 'create'
+      createPost: 'create',
+      fetchPosts: 'fetch'
     }),
 
     leafActive() {
@@ -364,23 +392,28 @@ export default {
       }
     },
 
-    toggleReplyField(id) {
+    toggleReplyField() {
       this.showReplyField = !this.showReplyField
+    },
+
+    clear() {
+      this.postDetails.author = ''
+      this.postDetails.email = ''
+      this.postDetails.post = ''
     },
 
     async savePost() {
       try {
-        if (this.postDetails !== null) {
-          await axios.post('http://localhost:5000/posts', {
+        if (this.postDetails.author !== '' && this.postDetails.email !== ''  && this.postDetails.post !== '') {
+          const data = {
             author_name: this.postDetails.author,
             author_email: this.postDetails.email,
             author_post: this.postDetails.post
-          })
-        } 
-        this.getPost()        
-        this.postDetails.author = ''
-        this.postDetails.email = ''
-        this.postDetails.post = ''
+          }
+          await this.createPost(data)
+          // this.getPost()        
+        }
+        this.clear()
       } catch (err) {
         console.log(err)
       }
@@ -395,25 +428,6 @@ export default {
         console.log(err)
       }
     }
-  },
-  computed: {
-    headerStyle() {
-      return {
-        backgroundImage: `url(${this.image})`
-      }
-    },
-    signupImage() {
-      return {
-        backgroundImage: `url(${this.signup})`
-      }
-    }
-  },
-  mounted() {
-    this.leafActive()
-    window.addEventListener("resize", this.leafActive)
-  },
-  beforeDestroy() {
-    window.removeEventListener("resize", this.leafActive)
   }
 }
 </script>

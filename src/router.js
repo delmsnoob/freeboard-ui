@@ -49,9 +49,10 @@ const routes = [
 
 const router = new VueRouter({ mode: 'history', routes: routes })
 
-// new Vue({
-//   router,
-// }).$mount('App')
+new Vue({
+  router,
+  store
+}).$mount('App')
 
 // export default new Router({
 //   routes: [
