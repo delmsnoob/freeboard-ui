@@ -25,8 +25,6 @@ Vue.use(VueRouter)
 Vue.use(MaterialKit)
 Vue.use(VueMaterial)
 
-Vue.prototype.$store = store
-
 Vue.use(VueTimeago, {
   name: 'Timeago',
   locale: 'en',
@@ -88,7 +86,7 @@ Vue.mixin({
 })
 
 new Vue({
-  store,
   router,
+  store,
   render: h => h(App)
 }).$mount("#app")
