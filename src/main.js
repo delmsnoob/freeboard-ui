@@ -5,6 +5,8 @@ import store from '@/modules/modules.js'
 
 import MaterialKit from "./plugins/material-kit"
 
+import VueSnackbar from 'vuejs-snackbar'
+
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css'
@@ -24,6 +26,8 @@ Vue.use(VueRouter)
 
 Vue.use(MaterialKit)
 Vue.use(VueMaterial)
+
+Vue.use(VueSnackbar)
 
 Vue.use(VueTimeago, {
   name: 'Timeago',
