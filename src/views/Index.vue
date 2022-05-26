@@ -92,6 +92,12 @@
         </div>
       </div>
       <div class="posts-section">
+        <snackbar
+          ref="snackbar"
+          baseSize="100px"
+          :holdTime="2000"
+          :position="position"
+        />
         <div class="section">
           <div class="container">
             <div class="md-layout-row">
@@ -118,29 +124,6 @@
                     </div>
 
                     <p>{{ item.author_post }}</p>
-
-                    <!-- <div
-                      v-show="showReplyField"
-                      class="reply-section"
-                      :id="item.id"
-                    >
-                      <md-avatar class="md-large">
-                        <img
-                          src="@/assets/img/faces/user.png"
-                          alt="avatar"
-                        >
-                      </md-avatar>
-                      <md-field md-clearable>
-                        <label>Write a nice reply</label>
-                        <md-textarea
-                          v-model="reply"
-                          :maxlength=replyMaxlength
-                          md-autogrow
-                          class="md-textarea"
-                        >
-                        </md-textarea>
-                      </md-field>
-                    </div> -->
 
                     <ReplySection :selectedPost="item.id" :post="posts" @click="selectedPost = post.id" :showReply="showReply" :replyMaxlength="replyMaxlength" :reply="reply"/>
 
@@ -280,14 +263,16 @@
 
 <script>
 // import { LoginCard } from '@/components'
+import VueSnackbar from 'vuejs-snackbar'
 import ReplySection from '@/views/components/ReplySection'
-import axios from 'axios';
 import { mapActions, mapState } from 'vuex'
+import axios from 'axios'
 
 export default {
   components: {
     // LoginCard,
-    ReplySection
+    ReplySection,
+    'snackbar': VueSnackbar
 },
   name: "Index",
   bodyClass: "index-page",
@@ -338,12 +323,12 @@ export default {
         post: '',
       },
       postcount: 0,
-      posts: [],
       postMaxlength: 200,
       reply: null,
       replyMaxlength: 100,
-
-      showReply: false
+      posts: [],
+      showReply: false,
+      position: 'bottom-right'
     };
   },
 
@@ -353,7 +338,7 @@ export default {
 
   computed: {
     ...mapState('posts', {
-      postList: 'posts',
+      postList: 'postList',
       postCount: 'postCount'
     }),
       
@@ -372,6 +357,8 @@ export default {
   mounted() {
     this.leafActive()
     window.addEventListener("resize", this.leafActive)
+    this.$refs.snackbar.info('Success!')
+    this.$refs.snackbar.error('Error')
   },
 
   beforeDestroy() {
@@ -380,8 +367,7 @@ export default {
 
   methods: {
     ...mapActions('posts', {
-      createPost: 'create',
-      fetchPosts: 'fetch'
+      createPost: 'create'
     }),
 
     leafActive() {
@@ -392,17 +378,13 @@ export default {
       }
     },
 
-    toggleReplyField() {
-      this.showReplyField = !this.showReplyField
-    },
-
     clear() {
       this.postDetails.author = ''
       this.postDetails.email = ''
       this.postDetails.post = ''
     },
 
-    async savePost() {
+    /* async savePost() {
       try {
         if (this.postDetails.author !== '' && this.postDetails.email !== ''  && this.postDetails.post !== '') {
           const data = {
@@ -410,10 +392,33 @@ export default {
             author_email: this.postDetails.email,
             author_post: this.postDetails.post
           }
+          console.log(data)
           await this.createPost(data)
           // this.getPost()        
         }
         this.clear()
+      } catch (err) {
+        console.log(err)
+      }
+    }, */
+
+    async savePost() {
+      const data = {
+        author_name: this.postDetails.author,
+        author_email: this.postDetails.email,
+        author_post: this.postDetails.post
+      }
+      try {
+        if (this.postDetails.author !== '' && this.postDetails.email !== ''  && this.postDetails.post !== '') {
+          const response = await axios.post('http://localhost:5000/posts', data)
+          
+          this.posts = response.data
+          this.postcount = response.data.length
+          this.clear()
+        } else {
+        }
+        
+        this.getPost()        
       } catch (err) {
         console.log(err)
       }

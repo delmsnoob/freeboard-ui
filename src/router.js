@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+
 import Index from "./views/Index.vue";
 import Landing from "./views/Landing.vue";
 import Login from "./views/Login.vue";
@@ -47,56 +48,10 @@ const routes = [
   }
 ]
 
-const router = new VueRouter({ mode: 'history', routes: routes })
+const router = new VueRouter({ 
+  mode: 'history',
+  base: process.env.BASE_URL,
+  routes,
+})
 
-// new Vue({
-//   router,
-//   store
-// }).$mount('App')
-
-// export default new Router({
-//   routes: [
-//     // {
-//     //   path: "/",
-//     //   name: "index",
-//     //   components: { default: Index, header: MainNavbar, footer: MainFooter },
-//     //   props: {
-//     //     header: { colorOnScroll: 400 },
-//     //     footer: { backgroundColor: "black" }
-//     //   }
-//     // },
-//     // {
-//     //   path: "/landing",
-//     //   name: "landing",
-//     //   components: { default: Landing, header: MainNavbar, footer: MainFooter },
-//     //   props: {
-//     //     header: { colorOnScroll: 400 },
-//     //     footer: { backgroundColor: "black" }
-//     //   }
-//     // },
-//     // {
-//     //   path: "/login",
-//     //   name: "login",
-//     //   components: { default: Login, header: MainNavbar, footer: MainFooter },
-//     //   props: {
-//     //     header: { colorOnScroll: 400 }
-//     //   }
-//     // },
-//     // {
-//     //   path: "/profile",
-//     //   name: "profile",
-//     //   components: { default: Profile, header: MainNavbar, footer: MainFooter },
-//     //   props: {
-//     //     header: { colorOnScroll: 400 },
-//     //     footer: { backgroundColor: "black" }
-//     //   }
-//     // }
-//   ],
-//   scrollBehavior: to => {
-//     if (to.hash) {
-//       return { selector: to.hash };
-//     } else {
-//       return { x: 0, y: 0 };
-//     }
-//   }
-// });
+export default router

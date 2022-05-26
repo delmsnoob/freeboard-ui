@@ -4,7 +4,7 @@ export default {
   namespaced: true,
 
   state: {
-    posts: [],
+    postList: [],
     postCount: 0
   },
 
@@ -39,17 +39,17 @@ export default {
   },
 
   actions: {
-    async create ({ commit, state }, data) {
+    async create ({ commit }, data) {
       try {
-        return await axios.post('/post', data)
+        return await axios.post('/posts', data)
       } catch (err) {
         console.log(err)
         throw err
       }
     },
 
-    async fetchPosts ({ commit }, posts) {
+    /* async fetchPosts ({ commit }, posts) {
       await axios.get('/posts', posts)
-    }
+    } */
   }
 }

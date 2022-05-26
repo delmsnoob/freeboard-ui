@@ -1,6 +1,18 @@
 <template>
   <form>
     <div
+      v-if="!commentCount"
+      class="md-layout-row text-center">
+      <i><small>Be the first one to comment</small></i>
+    </div>
+
+    <div
+      v-else
+      class="md-layout-row text-center">
+      <i><small>Replies</small></i>
+      {{ commentList }}
+    </div>
+    <div
       v-show="showReply"
       class="reply-section"
     >
@@ -80,7 +92,9 @@ export default {
     return {
       showReply: false,
       reply: '',
-      likes: 12
+      commentList: [],
+      likes: 12,
+      commentCount: 0
     }
   },
 
@@ -88,6 +102,10 @@ export default {
     selectedPost: Number,
     replyMaxlength: Number,
     userId: Number
+  },
+
+  created() {
+    this.getReply()
   },
 
   methods: {
@@ -124,14 +142,26 @@ export default {
       } catch (err) {
         console.log(err)
       }
+    },
+
+    async getReply() {
+      try {
+        const response = await axios.get('http://localhost:5000/comments', {
+          post_id: this.selectedPost
+        })
+        this.commentList = response.data
+        this.commentCount = response.data.length
+      } catch (err) {
+        console.log(err)
+      }
     }
   },
 
-  computed: {
+  /* computed: {
     showReplyField() {
       return this.post.id === this.selectedPost
     }
-  }
+  } */
 }
 </script>
 
