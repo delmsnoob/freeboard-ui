@@ -1,20 +1,20 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
+import Vue from "vue"
+import VueRouter from "vue-router"
 
-import Index from "./views/Index.vue";
-import Landing from "./views/Landing.vue";
-import Login from "./views/Login.vue";
-import Profile from "./views/Profile.vue";
-import MainNavbar from "./layout/MainNavbar.vue";
-import MainFooter from "./layout/MainFooter.vue";
+import Dashboard from "./views/Dashboard"
+import Landing from "./views/Landing"
+import Login from "./views/Login"
+import Profile from "./views/Profile"
+import MainNavbar from "./layout/MainNavbar"
+import MainFooter from "./layout/MainFooter"
 
 Vue.use(VueRouter);
 
 const routes = [
   {
-    path: "/",
-    name: "index",
-    components: { default: Index, header: MainNavbar, footer: MainFooter },
+    path: "/dashboard",
+    name: "dashboard",
+    components: { default: Dashboard, header: MainNavbar, footer: MainFooter },
     props: {
       header: { colorOnScroll: 400 },
       footer: { backgroundColor: "black" }
