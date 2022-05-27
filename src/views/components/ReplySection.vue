@@ -1,22 +1,34 @@
 <template>
   <form>
-    <div
-      v-if="!commentCount"
-      class="md-layout-row text-center">
-      <i><small>Be the first one to comment</small></i>
-    </div>
+    <div class="comment-actions">
+      <div
+        v-show="!showReply"
+        class="md-layout"
+      >
+        <!-- <small class="like-btn">{{ likes }}</small> -->
+        <md-button
+          @click="likePost"
+          class="md-simple md-raised md-info"
+        >
+          <md-icon class="mr">thumb_up</md-icon>
+          <small>like</small>
+        </md-button>
 
-    <div
-      v-else
-      class="md-layout-row text-center">
-      <i><small>Replies</small></i>
-      {{ commentList }}
+        <md-button
+          class="md-simple md-raised md-success" 
+          @click="toggleReplyField"
+        >
+          <md-icon class="mr">reply</md-icon>
+          <small>reply</small>
+        </md-button>
+        
+      </div>
     </div>
     <div
       v-show="showReply"
       class="reply-section"
-    >
-      <md-avatar class="md-large">
+      >
+      <md-avatar class="md-md">
         <img
           src="@/assets/img/faces/user.png"
           alt="avatar"
@@ -43,40 +55,79 @@
       </md-field>
     </div>
 
-    <div class="comment-footer">
+    
 
-      <div
-        v-if="!showReply"
-        class="md-layout"
+    <div class="cancel-btn" v-show="showReply">
+      <md-button
+        @click="cancelComment"
+        class="md-dense md-raised md-accent"
       >
-        <small class="like-btn">{{ likes }}</small>
+        <small class="btn-text__cancel">Cancel</small>
+      </md-button>
+    </div>
+    
+    <div
+      v-if="!commentCount"
+      class="md-layout-row text-center">
+      <i><small>Be the first one to comment</small></i>
+    </div>
+    <div
+      v-else
+      class="md-layout-row comment-wrapper">
+      <div
+        v-for="(item, key) in commentList"
+        v-show="showReplySection"
+        :key="key"
+      >
+        <div class="comment">
+          <md-avatar class="md-avatar">
+            <img
+              src="@/assets/img/faces/user.png"
+              alt="avatar"
+            >
+          </md-avatar>
+          <div class="md-layout-item">
+            <div class="comment-heading">
+              <h4 class="comment-author">
+                User reply
+              </h4>
+              <small>
+                <timeago :datetime="item.created_at" :auto-update="60"></timeago>
+                </small>
+            </div>
+            <div class="comment-body">
+              <p class="comment-content">{{ item.comment }}</p>
+            </div>
+            <!-- <div class="comment-actions">
+              <md-button class="md-simple md-raised md-info no-pad">
+                <md-icon>thumb_up</md-icon>
+                <small class="icon-text">like</small>
+              </md-button>
 
-        <md-button
-          @click="likePost"
-          class="md-simple md-raised md-info"
-        >
-          <md-icon class="mr">thumb_up</md-icon>
-          <small>like</small>
-        </md-button>
-
-        <md-button
-          class="md-simple md-raised md-success" 
-          @click="toggleReplyField"
-        >
-          <md-icon class="mr">reply</md-icon>
-          <small>reply</small>
-        </md-button>
-      </div>
-
-      <div class="cancel-btn" v-else>
-        <md-button
-          @click="cancelComment"
-          class="md-dense md-raised md-accent"
-        >
-          <small class="btn-text__cancel">Cancel</small>
-        </md-button>
+              <md-button
+                class="md-simple md-raised md-success" 
+                @click="toggleReplyField(item.id)"
+              >
+                <md-icon>reply</md-icon>
+                <small class="icon-text">reply</small>
+              </md-button>
+            </div> -->
+          </div>
+        </div>
       </div>
     </div>
+    <div class="md-layout-item show-reply">
+      <md-button
+        @click="toggleShowReplySection"
+        class="md-simple"
+      >
+        <span v-if="showReplySection">hide replies </span>
+        <span v-else>show replies ({{ commentCount }})</span>
+      </md-button>
+    </div>
+    
+
+    
   </form>
 </template>
 
@@ -91,21 +142,24 @@ export default {
   data() {
     return {
       showReply: false,
+      commentReply: false,
       reply: '',
       commentList: [],
       likes: 12,
-      commentCount: 0
+      commentCount: 0,
+      showReplySection: false
     }
   },
 
   props: {
     selectedPost: Number,
     replyMaxlength: Number,
-    userId: Number
+    userId: Number,
+    showAll: Boolean
   },
 
   created() {
-    this.getReply()
+    this.getComments()
   },
 
   methods: {
@@ -123,11 +177,15 @@ export default {
     },
 
     likePost() {
-      this.likes += 1
+      this.likes++
     },
 
     clear() {
       this.reply = ''
+    },
+
+    toggleShowReplySection() {
+      this.showReplySection = !this.showReplySection
     },
 
     async sendReply() {
@@ -139,16 +197,15 @@ export default {
           })
         }
         this.clear()
+        this.getComments()
       } catch (err) {
         console.log(err)
       }
     },
 
-    async getReply() {
+    async getComments() {
       try {
-        const response = await axios.get('http://localhost:5000/comments', {
-          post_id: this.selectedPost
-        })
+        const response = await axios.get(`http://localhost:5000/comments/${this.selectedPost}`) 
         this.commentList = response.data
         this.commentCount = response.data.length
       } catch (err) {
@@ -169,38 +226,65 @@ export default {
   .reply-section {
     display: flex;
     margin-top: 2rem;
+    padding: 0 2rem 0 1rem;
     gap: 1rem;
 
     .md-textarea {
       min-height: 100px !important;
+      padding-right: 2rem;
     }
-
     &.open {
       transition: all .5s;
     }
   }
-
-  .comment-footer {
+  .comment {
+      display: flex;
+      justify-content: flex-start;
+    }
+  .comment-heading {
+    font-weight: 500;
+    flex-direction: column;
+  }
+  .md-avatar {
+    margin: 0;
+  }
+  .comment-author {
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 0;
+  }
+  .comment-wrapper {
+    margin: 3rem 2rem;
+  }
+  .comment-body {
+    margin-top: 1rem;
+  }
+  .comment-actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     align-items: center;
 
     .mr {
       margin-right: 0.5rem;
     }
-
-    .cancel-btn {
-      margin-top: 2rem;
-    }
-
-    .like-btn {
-      margin: auto;
-    }
+  }
+  .show-reply {
+    display: flex;
+    justify-content: center;
+  }
+  .like-btn {
+    margin: auto;
+  }
+  .cancel-btn {
+    margin-top: 2rem;
+    padding-right: 2rem;
+    display: flex;
+    justify-content: end;
   }
   .send-btn {
-      position: absolute;
-      bottom: 0;
-      right: -1rem;
+    position: absolute;
+    bottom: 0;
+    right: -1rem;
   }
 
   .btn-text__cancel {

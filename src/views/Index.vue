@@ -92,29 +92,30 @@
         </div>
       </div>
       <div class="posts-section">
-        <snackbar
+        <!-- <snackbar
           ref="snackbar"
           baseSize="100px"
           :holdTime="2000"
           :position="position"
-        />
+        /> -->
         <div class="section">
           <div class="container">
             <div class="md-layout-row">
               <h3>{{ this.postcount }} Posts</h3>
-              <div v-for="(item, key) in posts"
+              <div 
+                v-for="(item, key) in posts"
                 :key="key"
               >
                 <div class="comment post-container">
-                    <md-avatar class="md-large">
-                      <img
-                        src="@/assets/img/faces/user.png"
-                        alt="avatar"
-                      >
-                    </md-avatar>
-
-                  <div class="md-layout-item">
+                  <div class="md-layout-item post-wrapper">
+                    
                     <div class="comment-body">
+                      <md-avatar class="md-md">
+                        <img
+                          src="@/assets/img/faces/user.png"
+                          alt="avatar"
+                        >
+                      </md-avatar>
                       <h4 class="comment-heading">
                         {{ item.author_name }}
                         <small>
@@ -123,8 +124,8 @@
                       </h4>
                     </div>
 
-                    <p>{{ item.author_post }}</p>
-
+                    <p class="post-content">{{ item.author_post }}</p>
+                    
                     <ReplySection :selectedPost="item.id" :post="posts" @click="selectedPost = post.id" :showReply="showReply" :replyMaxlength="replyMaxlength" :reply="reply"/>
 
                     <!-- <div class="comment-footer">
@@ -263,7 +264,7 @@
 
 <script>
 // import { LoginCard } from '@/components'
-import VueSnackbar from 'vuejs-snackbar'
+// import VueSnackbar from 'vuejs-snackbar'
 import ReplySection from '@/views/components/ReplySection'
 import { mapActions, mapState } from 'vuex'
 import axios from 'axios'
@@ -272,7 +273,7 @@ export default {
   components: {
     // LoginCard,
     ReplySection,
-    'snackbar': VueSnackbar
+    // 'snackbar': VueSnackbar
 },
   name: "Index",
   bodyClass: "index-page",
@@ -325,10 +326,10 @@ export default {
       postcount: 0,
       postMaxlength: 200,
       reply: null,
-      replyMaxlength: 100,
+      replyMaxlength: 200,
       posts: [],
       showReply: false,
-      position: 'bottom-right'
+      position: 'bottom-right',
     };
   },
 
@@ -357,8 +358,8 @@ export default {
   mounted() {
     this.leafActive()
     window.addEventListener("resize", this.leafActive)
-    this.$refs.snackbar.info('Success!')
-    this.$refs.snackbar.error('Error')
+    // this.$refs.snackbar.info('Success!')
+    // this.$refs.snackbar.error('Error')
   },
 
   beforeDestroy() {
@@ -437,6 +438,12 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+  .post-wrapper {
+    background-color: #efefef;
+  }
+  .post-content {
+    padding-left: .5rem;
+  }
   .posts-section {
     max-width: 800px;
     margin: auto;
@@ -446,33 +453,33 @@ export default {
     justify-content: start;
     // align-items: flex-start;
   }
-
   .post-container {
       margin-bottom: 4rem;
     }
-
   .md-textarea {
     min-height: 100px !important;
   }
-
+  .comment-body {
+    display: flex;
+    flex-direction: row;
+    padding: 1rem 0;
+    gap: .5rem;
+  }
   .comment-footer{
     display: flex;
     flex-direction: row;
     margin-top: 30px;
     justify-content: flex-end;
   }
-
   .comment-heading {
-    // display: flex;
+    display: flex;
+    gap: 1rem;
     font-weight: 500;
-    flex-direction: row;
   }
-
   small {
     display: block;
   }
-
-  .md-large {
+  .md-md {
     margin: 0;
   }
 
