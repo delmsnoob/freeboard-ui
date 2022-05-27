@@ -87,14 +87,12 @@
             >
           </md-avatar>
           <div class="md-layout-item">
-            <div class="comment-heading">
-              <h4 class="comment-author">
-                User reply
-              </h4>
+            <h4 class="comment-heading">
+              User reply
               <small>
                 <timeago :datetime="item.created_at" :auto-update="60"></timeago>
-                </small>
-            </div>
+              </small>
+            </h4>
             <div class="comment-body">
               <p class="comment-content">{{ item.comment }}</p>
             </div>
@@ -239,22 +237,21 @@ export default {
   }
   .comment {
       display: flex;
+      margin-top: 1rem;
       justify-content: flex-start;
     }
-  .comment-heading {
-    font-weight: 500;
-    flex-direction: column;
-  }
   .md-avatar {
     margin: 0;
   }
-  .comment-author {
-    font-size: 16px;
-    font-weight: 400;
+  .comment-heading {
+    display: flex;
+    font-size: 14px;
+    font-weight: 500;
     margin-bottom: 0;
+    gap: 1rem;
   }
   .comment-wrapper {
-    margin: 3rem 2rem;
+    margin: 0rem 2rem;
   }
   .comment-body {
     margin-top: 1rem;

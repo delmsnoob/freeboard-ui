@@ -475,6 +475,7 @@ export default {
     display: flex;
     gap: 1rem;
     font-weight: 500;
+    font-size: 15px;
   }
   small {
     display: block;
