@@ -1,38 +1,65 @@
 <template>
   <div class="wrapper">
-    <div class="section page-header header-filter" :style="headerStyle">
+    <div class="section page-header" :style="headerStyle">
       <div class="container">
-        <div class="md-layout">
+        <form novalidate class="md-layout" @submit.prevent="validateUser">
           <md-card
-            class="md-layout-item md-size-33 md-small-size-66 md-xsmall-size-100 md-medium-size-40 mx-auto"
+            class="md-layout-item md-size-33 md-small-size-66 md-xsmall-size-90 md-medium-size-40 mx-auto md-card"
           >
-            <!-- <md-card-header>
-              <div class="md-title">Please login</div>
-            </md-card-header> -->
             <md-card-content>
-              <div class="md-layout md-gutter">
+              <md-card-header>
+                <div class="category">Login</div>
+              </md-card-header>
+              <div class="md-layout login-card">
                 <div class="md-layout-item md-small-size-100">
-                  <md-field :class="getValidationClass('userName')">
+                  <md-field :class="getValidationClass('username')">
+                  <md-icon>person</md-icon>
                     <label for="username">Username</label>
                     <md-input
                       name="username"
                       id="username"
-                      v-model="form.userName"
+                      v-model="form.username"
                       :disabled="sending"
                     />
-                    <span class="md-error" v-if="!$v.form.userName.required">Username is required</span>
-                    <span class="md-error" v-else-if="!$v.form.userName">Invalid username</span>
+                    <span class="md-error" v-if="!$v.form.username.required">Username is required</span>
+                    <span class="md-error" v-else-if="!$v.form.username">Invalid username</span>
                   </md-field>
+                  
+                  <md-field :class="getValidationClass('password')">
+                  <md-icon>lock</md-icon>
+                    <label for="username">Password</label>
+                    <md-input
+                      name="password"
+                      id="password"
+                      type="password"
+                      v-model="form.password"
+                      :disabled="sending"
+                    />
+                    <span class="md-error" v-if="!$v.form.password.required">Password is required</span>
+                    <span class="md-error" v-else-if="!$v.form.password">Invalid password</span>
+                  </md-field>
+                </div>
+              </div>
+                </md-card-content>  
+
+                  <md-progress-spinner
+                    v-if="sending"
+                    :md-diameter="30"
+                    :md-stroke="4"
+                    md-mode="indeterminate"
+                    class="spinner"
+                  />
+
                   <md-card-actions class="actions">
                     <md-button
                       type="submit"
                       class="md-info md-block"
                       :disabled="sending"
-                    >Next</md-button>
+                    >Login</md-button>
+
+                    <md-button to="/register" class="md-simple md-info" :disabled="sending">Create account</md-button>
                   </md-card-actions>
-                </div>
-              </div>
-            </md-card-content>  
+
             <!-- <login-card header-color="green" class="card">
               <h4 slot="title" class="card-title">Login</h4>
               <md-field class="md-form-group" slot="inputs">
@@ -52,17 +79,23 @@
           </md-card>
 
           <md-snackbar :md-active.sync="userSaved">The user {{ lastUser }} was saved successfully!</md-snackbar>
-        </div>
+        </form>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import md5 from 'md5'
+import axios from 'axios'
+
 // import { LoginCard } from "@/components"
+import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
 
 export default {
+  name: 'Login',
+  mixins: [validationMixin],
   components: {
     // LoginCard
 
@@ -71,7 +104,7 @@ export default {
   data() {
     return {
       form: {
-        userName: null,
+        username: null,
         password: null
       },
       userSaved: false,
@@ -83,7 +116,7 @@ export default {
   props: {
     header: {
       type: String,
-      default: require("@/assets/img/profile_city.jpg")
+      default: require("@/assets/img/city-profile.jpg")
     }
   },
 
@@ -97,7 +130,8 @@ export default {
 
   validations: {
     form: {
-      userName: required
+      username: required,
+      password: required
     }
   },
   methods: {
@@ -113,25 +147,39 @@ export default {
 
     clearForm () {
       this.$v.$reset()
-      this.form.userName = null
+      this.form.username = null
+      this.form.password = null
     },
 
-    next () {
+    async login () {
       this.sending = true
 
-      window.setTimeout(() => {
-        this.lastUser = this.form.userName
+      const data = {
+        username: this.form.username,
+        password: md5(this.form.password)
+      }
+      try {
+        const response = await axios.post('http://localhost:5000/users/login', data)
+        window.setTimeout(() => {
+        this.sending = false
+          this.$router.push({ path: `/dashboard/${data.username}` })
+        }, 1500)
+        this.clearForm()
+      } catch (err) {
+        console.log(err)
+      }
+      /* window.setTimeout(() => {
         this.userSaved = true
         this.sending = false
         this.clearForm()
-      }, 1500)
+      }, 1500) */
     },
 
     validateUser () {
       this.$v.$touch()
 
       if (!this.$v.$invalid) {
-        this.saveuser()
+        this.login()
       }
     }
   }
@@ -139,8 +187,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .card {
-    
+  .md-card {
+    height: 370px !important;
+    align-items: center;
   }
   .md-progress-bar {
     position: absolute;
@@ -149,12 +198,28 @@ export default {
     left: 0;
   }
   .md-card-header {
-    max-height: 40px;
+    height: 60px;
     display: flex;
     justify-content: center;
     align-items: center;
   }
   .actions {
+    display: block !important;
     border: none !important;
+    justify-content: center !important;
+    padding: 0 1.5rem !important;
+    text-align: center;
+    position: absolute;
+    bottom: 2.5rem;
+    right: 0;
+    left: 0;
+  }
+  .login-card {
+    margin-top: 3rem;
+  }
+  .spinner {
+    position: absolute;
+    bottom: 0;
+    margin: 0 9.8rem 1rem;
   }
 </style>
