@@ -40,42 +40,25 @@
                   </md-field>
                 </div>
               </div>
-                </md-card-content>  
+            </md-card-content>  
 
-                  <md-progress-spinner
-                    v-if="sending"
-                    :md-diameter="30"
-                    :md-stroke="4"
-                    md-mode="indeterminate"
-                    class="spinner"
-                  />
+            <md-progress-spinner
+              v-if="sending"
+              :md-diameter="30"
+              :md-stroke="4"
+              md-mode="indeterminate"
+              class="spinner"
+            />
 
-                  <md-card-actions class="actions">
-                    <md-button
-                      type="submit"
-                      class="md-info md-block"
-                      :disabled="sending"
-                    >Login</md-button>
+            <md-card-actions class="actions">
+              <md-button
+                type="submit"
+                class="md-info md-block"
+                :disabled="sending"
+              >Login</md-button>
 
-                    <md-button to="/register" class="md-simple md-info" :disabled="sending">Create account</md-button>
-                  </md-card-actions>
-
-            <!-- <login-card header-color="green" class="card">
-              <h4 slot="title" class="card-title">Login</h4>
-              <md-field class="md-form-group" slot="inputs">
-                <md-icon>face</md-icon>
-                <label>Username</label>
-                <md-input v-model="username"></md-input>
-              </md-field>
-              <md-field class="md-form-group" slot="inputs">
-                <md-icon>lock_outline</md-icon>
-                <label>Password</label>
-                <md-input v-model="password"></md-input>
-              </md-field>
-              <md-button slot="footer" class="md-simple md-success md-lg">
-                Login
-              </md-button>
-            </login-card> -->
+              <md-button to="/register" class="md-simple md-info" :disabled="sending">Create account</md-button>
+            </md-card-actions>
           </md-card>
 
           <md-snackbar :md-active.sync="userSaved">The user {{ lastUser }} was saved successfully!</md-snackbar>
@@ -86,8 +69,10 @@
 </template>
 
 <script>
+import { vueLocalStorage } from '../assets/mixins/VueLocalStorage'
 import md5 from 'md5'
 import axios from 'axios'
+// import { mapActions } from 'vuex'
 
 // import { LoginCard } from "@/components"
 import { validationMixin } from 'vuelidate'
@@ -158,7 +143,25 @@ export default {
         username: this.form.username,
         password: md5(this.form.password)
       }
+
       try {
+        const token = await axios.post('http://localhost:5000/users/login', data, {
+          headers: {
+            'Authorization': `Basic ${token}`
+          }
+        })
+
+        // axios.defaults.headers.Authorization = `Bearer ${token}`
+
+        vueLocalStorage.setItem('token', token)
+
+        await this.$router.push({ path: `/dashboard/${data.username}` })
+      } catch (err) {
+        console.log(error)
+      }
+
+      
+      /* try {
         const response = await axios.post('http://localhost:5000/users/login', data)
         window.setTimeout(() => {
         this.sending = false
@@ -167,7 +170,7 @@ export default {
         this.clearForm()
       } catch (err) {
         console.log(err)
-      }
+      } */
       /* window.setTimeout(() => {
         this.userSaved = true
         this.sending = false
