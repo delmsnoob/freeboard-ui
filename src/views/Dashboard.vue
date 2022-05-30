@@ -358,8 +358,6 @@ export default {
   mounted() {
     this.leafActive()
     window.addEventListener("resize", this.leafActive)
-    // this.$refs.snackbar.info('Success!')
-    // this.$refs.snackbar.error('Error')
   },
 
   beforeDestroy() {
