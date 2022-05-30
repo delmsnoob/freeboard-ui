@@ -61,10 +61,11 @@
 
     .md-card-header{
         @include shadow-big();
-        margin: -40px  20px $margin-base;
+        margin: -45px 0 $margin-base;
         border-radius: $border-radius-base;
         padding: $padding-base + 5 0;
-        background-color: $gray-color;
+        background-color: $login-color;
+        width: 100%;
 
         .title,
         .card-title{
@@ -72,7 +73,8 @@
         }
         .category{
             margin: 0;
-            color: rgba($white-color, .62);
+            color: rgba($white-color, .80);
+            font-weight: 500;
         }
 
         a{
@@ -137,7 +139,7 @@
         }
 
         div{
-            display: inline-block;
+            // display: inline-block;
         }
         .author{
             color: $gray-color;
