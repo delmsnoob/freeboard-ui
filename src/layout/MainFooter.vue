@@ -30,7 +30,7 @@
         </ul>
       </nav> -->
       <div class="copyright">
-        &copy; {{ year }},Freeboard made with <vuejs :size="30" />
+        &copy; {{ year }} Freeboard made with <vuejs :size="30" />
       </div>
     <!-- </div> -->
   </footer>
