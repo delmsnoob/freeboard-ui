@@ -145,17 +145,8 @@ export default {
       }
 
       try {
-<<<<<<< HEAD
         const token = await axios.post('http://localhost:5000/users/login', data)
         console.log(token, 'token')
-=======
-        const token = await axios.post('http://localhost:5000/users/login', data, {
-          headers: {
-            'Authorization': `Basic ${token}`
-          }
-        })
-        console.log(token, 'token');
->>>>>>> 34eb93b2ab42f47430eeb216b32c35215a2f4f95
 
         // axios.defaults.headers.Authorization = `Bearer ${token}`
 
