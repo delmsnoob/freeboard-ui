@@ -145,19 +145,18 @@ export default {
       }
 
       try {
-        const token = await axios.post('http://localhost:5000/users/login', data, {
-          headers: {
-            'Authorization': `Basic ${token}`
-          }
-        })
+        const token = await axios.post('http://localhost:5000/users/login', data)
+        console.log(token, 'token')
 
         // axios.defaults.headers.Authorization = `Bearer ${token}`
 
-        vueLocalStorage.setItem('token', token)
+        // vueLocalStorage.setItem('token', token)
+        console.log(token.data)
+        // if (token.)
 
         await this.$router.push({ path: `/dashboard/${data.username}` })
       } catch (err) {
-        console.log(error)
+        console.log(err)
       }
 
       
