@@ -14,6 +14,14 @@ Vue.use(VueRouter);
 
 const routes = [
   {
+    path: "/",
+    name: "login",
+    components: { default: Login, header: MainNavbar, footer: MainFooter },
+    props: {
+      header: { colorOnScroll: 400 }
+    }
+  },
+  {
     path: "/dashboard",
     name: "dashboard",
     components: { default: Dashboard, header: MainNavbar, footer: MainFooter },
