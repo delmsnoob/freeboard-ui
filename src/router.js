@@ -4,6 +4,7 @@ import VueRouter from "vue-router"
 import Dashboard from "./views/Dashboard"
 import Landing from "./views/Landing"
 import Login from "./views/Login"
+import Logout from "./views/Logout"
 import Register from "./views/Register"
 import Profile from "./views/Profile"
 import PageNotFound from "./views/PageNotFound"
@@ -13,6 +14,22 @@ import MainFooter from "./layout/MainFooter"
 Vue.use(VueRouter);
 
 const routes = [
+  {
+    path: "/",
+    name: "login",
+    components: { default: Login, header: MainNavbar, footer: MainFooter },
+    props: {
+      header: { colorOnScroll: 400 }
+    }
+  },
+  {
+    path: "/logout",
+    name: "logout",
+    components: { default: Logout, header: MainNavbar, footer: MainFooter },
+    props: {
+      header: { colorOnScroll: 400 }
+    }
+  },
   {
     path: "/dashboard",
     name: "dashboard",
@@ -29,14 +46,6 @@ const routes = [
     props: {
       header: { colorOnScroll: 400 },
       footer: { backgroundColor: "black" }
-    }
-  },
-  {
-    path: "/login",
-    name: "login",
-    components: { default: Login, header: MainNavbar, footer: MainFooter },
-    props: {
-      header: { colorOnScroll: 400 }
     }
   },
   {

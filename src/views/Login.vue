@@ -150,6 +150,7 @@ export default {
             'Authorization': `Basic ${token}`
           }
         })
+        console.log(token, 'token');
 
         // axios.defaults.headers.Authorization = `Bearer ${token}`
 
@@ -157,7 +158,7 @@ export default {
 
         await this.$router.push({ path: `/dashboard/${data.username}` })
       } catch (err) {
-        console.log(error)
+        console.log(err)
       }
 
       
