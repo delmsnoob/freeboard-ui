@@ -21,7 +21,7 @@
         <div class="container text-center">
           <div class="md-layout-row">
             <div
-              class="md-layout-item md-size-66 md-xsmall-size-100 ml-auto mr-auto text-center"
+              class="md-layout-item md-size-80 md-xsmall-size-100 ml-auto mr-auto text-center"
             >
               <h2>Post your comment as</h2>
               <div class="md-layout-row">
