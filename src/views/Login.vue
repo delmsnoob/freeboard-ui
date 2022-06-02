@@ -92,6 +92,10 @@ export default {
     }
   },
 
+  created() {
+    this.checkToken()
+  },
+
   computed: {
     headerStyle() {
       return {
@@ -125,7 +129,7 @@ export default {
 
     invalidate () {
       window.setTimeout(() => {
-        this.invalid = !this.invalid
+        this.invalid = true
         this.sending = !this.sending
       }, 500)
     },

@@ -95,6 +95,36 @@
       <div class="posts-section">
         <div class="section">
           <div class="container">
+            <div class="md-layout md-gutter">
+              <div class="md-layout-item md-size-30">
+                <md-field>
+                  <label for="country">Search by</label>
+                  <md-select v-model="searchParams" name="saerch" id="search" md-dense>
+                    <md-option value="post">Post</md-option>
+                    <md-option value="user">User</md-option>
+                    <md-option value="comment">Comment</md-option>
+                  </md-select>
+                </md-field>
+              </div>
+
+              <div class="md-layout-item md-size-60">
+                <md-field>
+                  <md-input
+                    v-model="searchFor"
+                    md-layout="box"
+                    md-dense
+                  >
+                    <label>Posts</label>
+                  </md-input>
+                </md-field>
+              </div>
+
+              <div class="md-layout-item md-size-10 search-button">
+                <md-button class="md-simple" @click="filterResults">
+                    <md-icon>search</md-icon>
+                </md-button>
+              </div>
+            </div>
             <div class="md-layout-row">
               <h3>{{ this.postcount }} Posts</h3>
               <div 
@@ -121,7 +151,7 @@
 
                     <p class="post-content">{{ item.author_post }}</p>
                     
-                    <ReplySection :selectedPost="item.id" :post="posts" @click="selectedPost = post.id" :showReply="showReply" :replyMaxlength="replyMaxlength" :reply="reply"/>
+                    <ReplySection :selectedPost="item.id" @click="selectedPost = post.id" :showReply="showReply" :replyMaxlength="replyMaxlength" :reply="reply"/>
                   </div>
                 </div>
               </div>
@@ -243,17 +273,15 @@
 </template>
 
 <script>
-// import { LoginCard } from '@/components'
-// import VueSnackbar from 'vuejs-snackbar'
-import ReplySection from '@/views/components/ReplySection'
 import { mapActions, mapState } from 'vuex'
 import axios from 'axios'
 
+import ReplySection from '@/views/components/ReplySection'
+
+
 export default {
   components: {
-    // LoginCard,
     ReplySection,
-    // 'snackbar': VueSnackbar
 },
   name: "Index",
   bodyClass: "index-page",
@@ -310,6 +338,9 @@ export default {
       posts: [],
       showReply: false,
       position: 'bottom-right',
+
+      searchFor: null,
+      searchParams: 'post'
     };
   },
 
@@ -409,6 +440,16 @@ export default {
       } catch (err) {
         console.log(err)
       }
+    },
+
+    filterResults() {
+      const searchThis = {
+        params: this.searchParams,
+        data: this.searchFor
+      }
+      console.log(this.posts);
+      const handleSearch = this.posts.author_post.filter(x => x === searchThis.data)
+      console.log(handleSearch)
     }
   }
 }
@@ -458,6 +499,11 @@ export default {
   }
   .md-md {
     margin: 0;
+  }
+  
+  .search-button {
+    margin-top: .5rem !important;
+    padding: 0 !important;
   }
 
 @media all and (min-width: 991px) {
