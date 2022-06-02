@@ -63,13 +63,13 @@
                 </a>
               </li>
 
-              <md-list-item
-                href="/"
+              <!-- <md-list-item
+                to="/register"
                 v-if="showDownload"
               >
                 <i class="material-icons">person_add</i>
                 <p>Sign Up</p>
-              </md-list-item>
+              </md-list-item> -->
 
               <md-list-item
                 href="#"
