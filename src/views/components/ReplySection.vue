@@ -96,20 +96,6 @@
             <div class="comment-body">
               <p class="comment-content">{{ item.comment }}</p>
             </div>
-            <!-- <div class="comment-actions">
-              <md-button class="md-simple md-raised md-info no-pad">
-                <md-icon>thumb_up</md-icon>
-                <small class="icon-text">like</small>
-              </md-button>
-
-              <md-button
-                class="md-simple md-raised md-success" 
-                @click="toggleReplyField(item.id)"
-              >
-                <md-icon>reply</md-icon>
-                <small class="icon-text">reply</small>
-              </md-button>
-            </div> -->
           </div>
         </div>
       </div>
@@ -124,14 +110,12 @@
       </md-button>
     </div>
     
-
-    
   </form>
 </template>
 
 <script>
 import axios from 'axios'
-import { mapActions, mapState } from 'vuex'
+import { mapActions } from 'vuex'
 
 
 export default {
@@ -145,7 +129,8 @@ export default {
       commentList: [],
       likes: 12,
       commentCount: 0,
-      showReplySection: false
+      showReplySection: false,
+      userIdComment: null
     }
   },
 
@@ -158,6 +143,7 @@ export default {
 
   created() {
     this.getComments()
+    this.getToken()
   },
 
   methods: {
@@ -189,10 +175,12 @@ export default {
     async sendReply() {
       try {
         if (this.reply !== '') {
-          await axios.post('http://localhost:5000/comments', {
+          const data = {
+            user_id: this.userIdComment,
             post_id: this.selectedPost,
-            comment: this.reply,
-          })
+            comment: this.reply
+          }
+          await axios.post('http://localhost:5000/comments', data)
         }
         this.clear()
         this.getComments()
@@ -206,6 +194,21 @@ export default {
         const response = await axios.get(`http://localhost:5000/comments/${this.selectedPost}`) 
         this.commentList = response.data
         this.commentCount = response.data.length
+      } catch (err) {
+        console.log(err)
+      }
+    },
+
+    getToken() {
+      try {
+        const id = JSON.parse(localStorage.getItem('user'))
+
+        if (!id) {
+          alert('Please login first')
+          this.$router.push('/')
+        } else {
+          this.userIdComment = id.id
+        }
       } catch (err) {
         console.log(err)
       }
