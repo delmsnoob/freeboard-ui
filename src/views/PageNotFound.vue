@@ -2,8 +2,8 @@
   <div class="wrapper">
     <div class="section page-header" :style="headerStyle">
       <div class="container">
-        <h2>404</h2>
-        <h3>Page Not Found</h3>
+        <span>404</span>
+        <span>Page Not Found</span>
       </div>
     </div>
   </div>
@@ -33,5 +33,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+  span {
+    font-size: 30px;
+    margin: .5rem 0;
+  }
 </style>

@@ -17,7 +17,7 @@ const routes = [
   {
     path: "/",
     name: "login",
-    components: { default: Login, header: MainNavbar, footer: MainFooter },
+    components: { default: Login, header: '', footer: MainFooter },
     props: {
       header: { colorOnScroll: 400 }
     }
@@ -64,13 +64,16 @@ const routes = [
     props: {
       header: { colorOnScroll: 400 },
       footer: { backgroundColor: "black" }
-    }
+    },
+    // component: () => {
+      // import(/* webpackChunkName: "dashboard" */ './views/Dashboard.vue')
+    // },
   },
   // 404
   {
     path: '/:catchAll(.*)',
     name: 'paeg-not-found',
-    components: { default: PageNotFound, header: MainNavbar, footer: MainFooter },
+    components: { default: PageNotFound, header: '', footer: MainFooter },
     props: {
       header: { colorOnScroll: 400 },
       footer: { backgroundColor: "black" }
