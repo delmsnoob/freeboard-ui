@@ -23,14 +23,6 @@ const routes = [
     }
   },
   {
-    path: "/logout",
-    name: "logout",
-    components: { default: Logout, header: MainNavbar, footer: MainFooter },
-    props: {
-      header: { colorOnScroll: 400 }
-    }
-  },
-  {
     path: "/dashboard",
     name: "dashboard",
     components: { default: Dashboard, header: MainNavbar, footer: MainFooter },
