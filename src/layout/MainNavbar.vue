@@ -72,12 +72,21 @@
               </md-list-item>
 
               <md-list-item
-                href="javascript:void(0)"
-                @click="scrollToElement()"
+                href="#"
+                @click="logout"
                 v-if="showDownload"
               >
                 <i class="material-icons">logout</i>
                 <p>Logout</p>
+              </md-list-item>
+
+              <md-list-item
+                href="#"
+                v-if="showDownload"
+                @click="showToken"
+              >
+                <i class="material-icons">token</i>
+                <p>Show token</p>
               </md-list-item>
             </md-list>
           </div>
@@ -102,6 +111,7 @@ function resizeThrottler(actualResizeHandler) {
 }
 
 import MobileMenu from "@/layout/MobileMenu";
+import { vueLocalStorage } from "../assets/mixins/VueLocalStorage";
 export default {
   components: {
     MobileMenu
@@ -183,6 +193,18 @@ export default {
       if (element_id) {
         element_id.scrollIntoView({ block: "end", behavior: "smooth" });
       }
+    },
+    showToken() {
+      const token = localStorage.getItem('user')
+      console.log(token, 'token') 
+    },
+
+    logout() {
+      localStorage.removeItem('user')
+      window.setTimeout(() => {
+        this.$router.push({ path: '/' })
+        this.toggleNavbarMobile()
+      }, 500)
     }
   },
   mounted() {

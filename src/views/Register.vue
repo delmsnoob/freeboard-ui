@@ -71,19 +71,14 @@
 
 
             <md-card-actions class="actions">
-              <md-button
-                type="submit"
-                class="md-info md-block"
-                :disabled="sending"
-              >Create account</md-button>
+              <md-button type="submit" class="md-info md-block" :disabled="sending">Create account</md-button>
+              <md-button to="/" class="md-simple md-info" :disabled="sending">Go back</md-button>
             </md-card-actions>
 
-            <md-progress-spinner
+            <md-progress-bar
               v-if="sending"
-              :md-diameter="30"
-              :md-stroke="4"
               md-mode="indeterminate"
-              class="spinner"
+              class="md-progress-bar"
             />
 
 
@@ -229,7 +224,7 @@ export default {
       if (!this.$v.$invalid) {
         this.register()
         window.setTimeout(() => {
-          this.$router.push({ path: '/login' })
+          this.$router.push({ path: '/' })
         }, 3000)
       }
     }
@@ -239,7 +234,7 @@ export default {
 
 <style lang="scss" scoped>
   .md-card {
-    height: 450px !important;
+    height: 480px !important;
   }
   .md-progress-bar {
     position: absolute;
@@ -256,8 +251,7 @@ export default {
   .actions {
     border: none !important;
     justify-content: center !important;
-    margin-top: 1rem !important;
-    padding: .5rem 1rem !important
+    margin-bottom: 2rem !important;
   }
   .register-card {
     margin-top: 2rem;
@@ -268,11 +262,30 @@ export default {
   .md-field {
     margin-top: 1rem;
   }
-  .spinner {
+  .md-progress-bar {
+    position: absolute;
+    bottom: -1.3rem;
+    right: 0;
+    left: 0;
+  }
+  .actions {
+    display: block !important;
+    border: none !important;
+    justify-content: center !important;
+    padding: 0 1.5rem !important;
+    text-align: center;
     position: absolute;
     bottom: 0;
-    margin: 0 9.8rem 1rem;
-    // right: 0;
-    // left: 0;
+    right: 0;
+    left: 0;
+  }
+  label {
+    font-size: 12px !important;
+  }
+  .md-icon {
+    font-size: 20px !important;
+  }
+  .toggle-pass {
+    font-size: 10px !important;
   }
 </style>

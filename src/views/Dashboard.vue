@@ -35,6 +35,7 @@
                 </div>
                 <div class="md-layout-item">
                   <h4 v-if="user === null">Guest</h4>
+                  <h4 v-else>{{ user }}</h4>
                 </div>
               </div>
               <div class="post-comment">                
@@ -92,12 +93,6 @@
         </div>
       </div>
       <div class="posts-section">
-        <!-- <snackbar
-          ref="snackbar"
-          baseSize="100px"
-          :holdTime="2000"
-          :position="position"
-        /> -->
         <div class="section">
           <div class="container">
             <div class="md-layout-row">
@@ -127,21 +122,6 @@
                     <p class="post-content">{{ item.author_post }}</p>
                     
                     <ReplySection :selectedPost="item.id" :post="posts" @click="selectedPost = post.id" :showReply="showReply" :replyMaxlength="replyMaxlength" :reply="reply"/>
-
-                    <!-- <div class="comment-footer">
-                      <md-button class="md-simple md-raised md-info no-pad">
-                        <md-icon>thumb_up</md-icon>
-                        <small class="icon-text">like</small>
-                      </md-button>
-
-                      <md-button
-                        class="md-simple md-raised md-success" 
-                        @click="toggleReplyField(item.id)"
-                      >
-                        <md-icon>reply</md-icon>
-                        <small class="icon-text">reply</small>
-                      </md-button>
-                    </div> -->
                   </div>
                 </div>
               </div>
@@ -335,6 +315,7 @@ export default {
 
   created() {
     this.getPost()
+    this.getToken()
   },
 
   computed: {
@@ -383,24 +364,6 @@ export default {
       this.postDetails.post = ''
     },
 
-    /* async savePost() {
-      try {
-        if (this.postDetails.author !== '' && this.postDetails.email !== ''  && this.postDetails.post !== '') {
-          const data = {
-            author_name: this.postDetails.author,
-            author_email: this.postDetails.email,
-            author_post: this.postDetails.post
-          }
-          console.log(data)
-          await this.createPost(data)
-          // this.getPost()        
-        }
-        this.clear()
-      } catch (err) {
-        console.log(err)
-      }
-    }, */
-
     async savePost() {
       const data = {
         author_name: this.postDetails.author,
@@ -428,6 +391,21 @@ export default {
         const response = await axios.get('http://localhost:5000/posts')
         this.posts = response.data
         this.postcount = response.data.length
+      } catch (err) {
+        console.log(err)
+      }
+    },
+
+    getToken() {
+      try {
+        const id = JSON.parse(localStorage.getItem('user'))
+        
+        if (!id) {
+          alert('You need to login first')
+          this.$router.push({ path: '/' })
+        } else {
+          this.user = id.username
+        }
       } catch (err) {
         console.log(err)
       }

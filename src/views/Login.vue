@@ -10,6 +10,7 @@
               <md-card-header>
                 <div class="category">Login</div>
               </md-card-header>
+              
               <div class="md-layout login-card">
                 <div class="md-layout-item md-small-size-100">
                   <md-field :class="getValidationClass('username')">
@@ -40,23 +41,14 @@
                   </md-field>
                 </div>
               </div>
-            </md-card-content>  
+            </md-card-content>
 
-            <md-progress-spinner
-              v-if="sending"
-              :md-diameter="30"
-              :md-stroke="4"
-              md-mode="indeterminate"
-              class="spinner"
-            />
+            <span class="text-danger" v-if="invalid">Invalid credentials</span>
+
+            <md-progress-bar v-if="sending" md-mode="indeterminate" class="md-progress-bar"/>
 
             <md-card-actions class="actions">
-              <md-button
-                type="submit"
-                class="md-info md-block"
-                :disabled="sending"
-              >Login</md-button>
-
+              <md-button type="submit" class="md-info md-block" :disabled="sending">Login</md-button>
               <md-button to="/register" class="md-simple md-info" :disabled="sending">Create account</md-button>
             </md-card-actions>
           </md-card>
@@ -69,22 +61,16 @@
 </template>
 
 <script>
-import { vueLocalStorage } from '../assets/mixins/VueLocalStorage'
 import md5 from 'md5'
 import axios from 'axios'
-// import { mapActions } from 'vuex'
 
-// import { LoginCard } from "@/components"
 import { validationMixin } from 'vuelidate'
 import { required } from 'vuelidate/lib/validators'
 
 export default {
   name: 'Login',
   mixins: [validationMixin],
-  components: {
-    // LoginCard
-
-  },
+  
   bodyClass: "login-page",
   data() {
     return {
@@ -94,7 +80,8 @@ export default {
       },
       userSaved: false,
       sending: false,
-      lastUser: null
+      lastUser: null,
+      invalid: false
     }
   },
 
@@ -136,6 +123,29 @@ export default {
       this.form.password = null
     },
 
+    invalidate () {
+      window.setTimeout(() => {
+        this.invalid = !this.invalid
+        this.sending = !this.sending
+      }, 500)
+    },
+
+    async checkToken () {
+      try {
+        const id = JSON.parse(localStorage.getItem('user'))
+        const token = id.username
+
+        console.log(id, 'id')
+        console.log(token, 'token')
+
+        if (id) {
+          this.$router.push({ path: `/dashboard/${token}` })
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    },
+
     async login () {
       this.sending = true
       
@@ -146,35 +156,22 @@ export default {
 
       try {
         const token = await axios.post('http://localhost:5000/users/login', data)
-        console.log(token, 'token')
 
-        // axios.defaults.headers.Authorization = `Bearer ${token}`
-
-        // vueLocalStorage.setItem('token', token)
-        console.log(token.data)
-        // if (token.)
-
-        await this.$router.push({ path: `/dashboard/${data.username}` })
+        if (token.data) {
+          window.setTimeout(() => {
+            const tokenData = {
+              id: token.data.id,
+              username: token.data.username
+            }
+            localStorage.setItem('user', JSON.stringify(tokenData))
+            this.$router.push({ path: `/dashboard/${token.data.username}` })
+          }, 500)
+        } else {
+          this.invalidate()
+        }
       } catch (err) {
         console.log(err)
       }
-
-      
-      /* try {
-        const response = await axios.post('http://localhost:5000/users/login', data)
-        window.setTimeout(() => {
-        this.sending = false
-          this.$router.push({ path: `/dashboard/${data.username}` })
-        }, 1500)
-        this.clearForm()
-      } catch (err) {
-        console.log(err)
-      } */
-      /* window.setTimeout(() => {
-        this.userSaved = true
-        this.sending = false
-        this.clearForm()
-      }, 1500) */
     },
 
     validateUser () {
@@ -195,7 +192,7 @@ export default {
   }
   .md-progress-bar {
     position: absolute;
-    top: 0;
+    bottom: -1.3rem;
     right: 0;
     left: 0;
   }
@@ -219,9 +216,14 @@ export default {
   .login-card {
     margin-top: 3rem;
   }
-  .spinner {
-    position: absolute;
-    bottom: 0;
-    margin: 0 9.8rem 1rem;
+  .text-danger {
+    // font-style: italic;
+    font-size: 12px;
+    width: 100%;
+    // margin: auto;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem !important;
+    line-height: .5;
   }
 </style>
