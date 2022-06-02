@@ -138,7 +138,7 @@ export default {
 
     async login () {
       this.sending = true
-
+      
       const data = {
         username: this.form.username,
         password: md5(this.form.password)
