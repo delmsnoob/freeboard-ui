@@ -1,16 +1,16 @@
 <template>
-  <div class="wrapper">
+	<div class="wrapper">
 		<div class="md-layout mr-auto ml-auto md-gutter">
 			<div class="md-layout-item md-size-30">
-        <md-field>
-          <label for="country">Search by</label>
-          <md-select v-model="searchParams" name="saerch" id="search" md-dense>
-            <md-option value="post">Post</md-option>
-            <md-option value="user">User</md-option>
-            <md-option value="comment">Comment</md-option>
-          </md-select>
-        </md-field>
-      </div>
+				<md-field>
+					<label for="country">Search by</label>
+					<md-select v-model="searchParams" name="saerch" id="search" md-dense>
+						<md-option value="post">Post</md-option>
+						<md-option value="user">User</md-option>
+						<md-option value="comment">Comment</md-option>
+					</md-select>
+				</md-field>
+			</div>
 
 			<div class="md-layout-item md-size-60">
 				<md-field>
@@ -25,12 +25,13 @@
 			</div>
 
 			<div class="md-layout-item md-size-10 search-button">
-				<md-button class="md-simple">
-						<md-icon>search</md-icon>
+				<md-button class="md-simple" @click="handleSearch">
+					<md-icon>search</md-icon>
 				</md-button>
 			</div>
+			{{ postContent }}
 		</div>
-  </div>
+	</div>
 </template>
 
 <script>
@@ -40,8 +41,42 @@ export default {
 	data() {
 		return {
 			searchFor: null,
-			searchParams: null
+			searchParams: null,
+			postContent: [],
+			hidePosts: this.initialDisplaySearch
 		}
+	},
+
+	props: {
+		posts: { 
+			type: [Array, Object]
+		},
+		showPosts: {
+			type: Boolean,
+			default: false
+		}
+	},
+
+	methods: {
+		handleSearch() {
+			const params = {
+				searchBy: this.searchParams,
+				searchData: this.searchFor
+			}
+
+			if (params.searchBy === 'post')  {
+				const tempData = this.posts
+				
+				const response = tempData.filter(keyword => keyword.author_post.includes(params.searchData))
+				const parseResponse = JSON.parse(JSON.stringify((response)))
+				this.postContent = parseResponse
+
+			} else if (params.searchBy === 'user') {
+				console.log('search by user')
+			} else if (params.searchBy === 'comment') {
+				console.log('search by comment');
+			}
+		},
 	}
 }
 </script>

@@ -137,8 +137,6 @@ export default {
   props: {
     selectedPost: Number,
     replyMaxlength: Number,
-    userId: Number,
-    showAll: Boolean
   },
 
   created() {
@@ -183,6 +181,7 @@ export default {
           await axios.post('http://localhost:5000/comments', data)
         }
         this.clear()
+        this.toggleShowReplySection()
         this.getComments()
       } catch (err) {
         console.log(err)
