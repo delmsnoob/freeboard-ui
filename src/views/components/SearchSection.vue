@@ -72,10 +72,19 @@ export default {
 				this.postContent = parseResponse
 
 			} else if (params.searchBy === 'user') {
-				console.log('search by user')
-			} else if (params.searchBy === 'comment') {
-				console.log('search by comment');
-			}
+				const tempData = this.posts
+				
+				const response = tempData.filter(keyword => keyword.author_name.includes(params.searchData))
+				const parseResponse = JSON.parse(JSON.stringify((response)))
+				this.postContent = parseResponse
+
+			} /* else if (params.searchBy === 'comment') {
+				const tempData = this.posts
+				
+				const response = tempData.filter(keyword => keyword.username.includes(params.searchData))
+				const parseResponse = JSON.parse(JSON.stringify((response)))
+				this.postContent = parseResponse
+			} */
 		},
 	}
 }
