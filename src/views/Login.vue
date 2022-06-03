@@ -10,7 +10,7 @@
               <md-card-header>
                 <div class="category">Login</div>
               </md-card-header>
-              
+
               <div class="md-layout login-card">
                 <div class="md-layout-item md-small-size-100">
                   <md-field :class="getValidationClass('username')">
@@ -136,14 +136,9 @@ export default {
 
     async checkToken () {
       try {
-        const id = JSON.parse(localStorage.getItem('user'))
-        const token = id.username
-
-        console.log(id, 'id')
-        console.log(token, 'token')
-
-        if (id) {
-          this.$router.push({ path: `/dashboard/${token}` })
+        const token = JSON.parse(localStorage.getItem('user'))
+        if (token) {
+          this.$router.push({ path: `/dashboard/${token.username}` })
         }
       } catch (err) {
         console.log(err)
@@ -168,7 +163,7 @@ export default {
               username: token.data.username
             }
             localStorage.setItem('user', JSON.stringify(tokenData))
-            this.$router.push({ path: `/dashboard/${token.data.username}` })
+            this.$router.push({ path: `/dashboard/${tokenData.username}` })
           }, 500)
         } else {
           this.invalidate()
