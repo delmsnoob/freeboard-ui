@@ -8,6 +8,7 @@ import MaterialKit from "./plugins/material-kit"
 
 import VueSnackbar from 'vuejs-snackbar'
 import Vuelidate from 'vuelidate'
+import moment from 'moment'
 
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
@@ -24,6 +25,11 @@ Vue.use(VueMaterial)
 
 Vue.use(VueSnackbar)
 Vue.use(Vuelidate)
+Vue.filter('formatDate', function(value) {
+  if (value) {
+    return moment(String(value)).format('MMM DD, YYYY')
+  }
+})
 
 Vue.use(VueTimeago, {
   name: 'Timeago',

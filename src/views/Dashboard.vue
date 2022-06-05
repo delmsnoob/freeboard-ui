@@ -96,11 +96,50 @@
       <div class="posts-section">
         <div class="section">
 
-          <SearchSection :posts="posts" />
+          <!-- <SearchSection :posts="posts" /> -->
+
+          <div class="md-layout mr-auto ml-auto md-gutter">
+            <div class="md-layout-item md-size-30">
+              <md-field>
+                <label for="country">Search by</label>
+                <md-select v-model="searchParams" name="saerch" id="search" md-dense>
+                  <md-option class="filter" value="author_post">Post</md-option>
+                  <md-option class="filter" value="author_name">User</md-option>
+                  <md-option class="filter" value="created_at">Date</md-option>
+                </md-select>
+              </md-field>
+            </div>
+
+            <div class="md-layout-item md-size-60">
+              <md-field
+                v-if="searchParams === 'author_post' || searchParams === 'author_name'"
+              >
+                <md-input
+                  v-model="searchFor"
+                  md-layout="box"
+                  md-dense
+                >
+                  <label>Posts</label>
+                </md-input>
+              </md-field>
+
+              <div v-else>
+                <md-datepicker v-model="searchFor">
+                  <label>Select date</label>
+                </md-datepicker>
+              </div>
+            </div>
+
+            <div class="md-layout-item md-size-10 search-button">
+              <md-button class="md-simple" @click="handleSearch">
+                <md-icon>search</md-icon>
+              </md-button>
+            </div>
+          </div>
 
           <div class="container">
             <div class="md-layout-row">
-              <h3>{{ this.postcount }} Posts</h3>
+              <h3>{{ this.postCount }} Posts</h3>
               <div 
                 v-for="(item, key) in posts"
                 :key="key"
@@ -116,8 +155,9 @@
                         >
                       </md-avatar>
                       <h4 class="comment-heading">
-                        {{ item.author_name }}
+                        @{{ item.author_name }}
                         <small>
+                          {{ item.created_at | formatDate}} |
                           <timeago :datetime="item.created_at" :auto-update="60"></timeago>
                         </small>
                       </h4>
@@ -138,18 +178,17 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
 import axios from 'axios'
 
 import ReplySection from '@/views/components/ReplySection'
-import SearchSection from './components/SearchSection'
+// import SearchSection from './components/SearchSection'
 
 export default {
   name: "Dashboard",
 
   components: {
     ReplySection,
-    SearchSection
+    // SearchSection
   },
 
   bodyClass: "index-page",
@@ -191,8 +230,6 @@ export default {
 
   data() {
     return {
-      firstname: null,
-      password: null,
       leafShow: false,
       user: null,
       email: null,
@@ -201,7 +238,7 @@ export default {
         email: '',
         post: '',
       },
-      postcount: 0,
+      postCount: 0,
       postMaxlength: 200,
       reply: null,
       replyMaxlength: 200,
@@ -210,7 +247,7 @@ export default {
       position: 'bottom-right',
 
       searchFor: null,
-      searchParams: 'post',
+      searchParams: 'author_post',
 
       showPosts: false
     }
@@ -222,11 +259,6 @@ export default {
   },
 
   computed: {
-    // ...mapState('posts', {
-    //   postList: 'postList',
-    //   postCount: 'postCount'
-    // }),
-      
     headerStyle() {
       return {
         backgroundImage: `url(${this.image})`
@@ -249,10 +281,6 @@ export default {
   },
 
   methods: {
-    /* ...mapActions('posts', {
-      createPost: 'create'
-    }), */
-
     leafActive() {
       if (window.innerWidth < 768) {
         this.leafShow = false
@@ -278,7 +306,7 @@ export default {
           const response = await axios.post('http://localhost:5000/posts', data)
           
           this.posts = response.data
-          this.postcount = response.data.length
+          this.postCount = response.data.length
           this.clear()
         } else {
         }
@@ -293,7 +321,7 @@ export default {
       try {
         const response = await axios.get('http://localhost:5000/posts')
         this.posts = response.data
-        this.postcount = response.data.length
+        this.postCount = response.data.length
       } catch (err) {
         console.log(err)
       }
@@ -314,9 +342,24 @@ export default {
       }
     },
 
-    handleShowPosts(event) {
-      const { value } = event.target
-      this.value = !value
+    async handleSearch() {
+      this.getPost()
+
+      const params = {
+        searchBy: this.searchParams,
+        searchData: this.searchFor
+      }
+
+      if (params.searchBy !== null && params.searchData === null) {
+        console.log(params.searchData)
+      } else if (params.searchData !== null) {
+        const response = await axios.get(`http://localhost:5000/posts/${params.searchBy}/${params.searchData}`)
+
+        this.posts = response.data
+        this.postCount = response.data.length
+
+        // const response = tempData.filter(keyword => keyword.author_post.includes(params.searchData))
+      }
     }
   }
 }
@@ -366,6 +409,9 @@ export default {
   }
   .md-md {
     margin: 0;
+  }
+  .md-list-item-text{
+    left: 1rem !important;
   }
   
 @media all and (min-width: 991px) {
